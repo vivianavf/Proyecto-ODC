@@ -1,0 +1,57 @@
+.data
+msjbienvenido: .asciiz "Bienvenido a la cabina telefónica!!\n" 	#mensaje de bienvenida
+msjmonedas: .asciiz "Ingrese moneda: $\n"	#instruccion para usuario
+msjsaldo: .asciiz "Su saldo total es: " #mensaje para el saldo total
+msjincorrecta: .asciiz "Moneda Incorrecta" #mensaje cuando una moneta es incorrecta
+monedasvalidas: .word 1,5,10,25,50
+
+.text
+.globl main
+
+main: 	
+	la $t0, monedasvalidas	#guardo en t0 la direccion de monedasvalidas
+	lw $t1, 0($t0)		#guardo en t1 el 1
+	lw $t2, 4($t0)		#guardo en t2 el 5
+	lw $t3, 12($t0)		#guardo en t3 el 10
+	lw $t4, 16($t0)		#guardo en t4 el 25
+	lw $t5, 20($t0)		#guardo en t5 el 50
+	li $v0, 4		#syscall print string
+	la $a0, msjbienvenido	#cargo mensaje bienvenido en a0
+	syscall			#print
+	la $a0, msjmonedas	#cargo mensaje monedas en a0
+	syscall 		#print
+	li $v0, 5		#syscall leer entrada de usuario (int)
+	syscall
+	move $t6, $v0		#muevo el resultado de la entrada a t6
+validar:
+	bne $t6, $t1, incorrecta #si no es igual a 1, voy a incorrecta
+	bne $t6, $t2, incorrecta #si no es igual a 5, voy a incorrecta
+	bne $t6, $t3, incorrecta #si no es igual a 10, voy a incorrecta
+	bne $t6, $t4, incorrecta #si no es igual a 25, voy a incorrecta
+	bne $t6, $t5, incorrecta #si no es igual a 50, voy a incorrecta
+loop:
+	la $a0, msjmonedas	#cargo mensaje monedas en a0
+	syscall 		#print
+	li $v0, 5		#syscall leer entrada de usuario (int)
+	syscall
+	move $t6, $v0		#muevo el resultado de la entrada a t6
+	j validar		#voy a validar
+	
+incorrecta:
+	li $v0, 4		#print str
+	la $a0, msjincorrecta	#cargo mensaje de moneda inc. en a0
+	syscall			#print
+exit:	li $v0,10		#syscall salir
+	syscall			#exit
+
+	
+	
+
+
+	
+	
+	
+	
+	
+	
+	
